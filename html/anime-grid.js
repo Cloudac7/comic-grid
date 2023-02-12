@@ -7,9 +7,9 @@ const get = async (url)=>{
     htmlEl.setAttribute('data-no-touch',true);
     const f = await fetch(url);
     const data = await f.json();
-    Caches[url] = data;
+    Caches[url] = data["list"];
     htmlEl.setAttribute('data-no-touch',false);
-    return data;
+    return data["list"];
 }
 
 
@@ -29,7 +29,7 @@ const loadImage = (src,onOver)=>{
 };
 
 
-const APIURL = `https://lab.magiconch.com/api/bangumi/`;
+const APIURL = `https://api.bgm.tv/search/subject/`;
 const ImageURL = `https://api.anitabi.cn/bgm/`;
 
 
@@ -118,8 +118,8 @@ class AnimeGrid {
         );
 
         const copyRightText = [
-            'lab.magiconch.com/anime-grid' + urlExt,
-            '@卜卜口',
+            'cloudac7.github.io/comic-grid' + urlExt,
+            'Forked from @卜卜口',
             '神奇海螺试验场',
             '动画信息来自番组计划',
             '禁止商业、盈利用途'
@@ -347,8 +347,8 @@ class AnimeGrid {
 
 
     async searchFromBangumiByKeyword(keyword){
-        let url = `${APIURL}anime/onlines`;
-        if(keyword) url = url + `?keyword=${encodeURIComponent(keyword)}`;
+        let url = `${APIURL}`;
+        if(keyword) url = url + `${encodeURIComponent(keyword)}?type=1`;
 
         const animes = await get(url);
         this.resetAnimeList(animes);
@@ -363,8 +363,8 @@ class AnimeGrid {
 
 
     async searchFromAPI(keyword){
-        let url = `${APIURL}animes`;
-        if(keyword) url = url + `?keyword=${encodeURIComponent(keyword)}`;
+        let url = `${APIURL}`;
+        if(keyword) url = url + `${encodeURIComponent(keyword)}?type=1`;
 
         const animes = await get(url);
         this.resetAnimeList(animes);
@@ -372,7 +372,7 @@ class AnimeGrid {
 
     resetAnimeList(animes){
         this.animeListEl.innerHTML = animes.map(anime=>{
-            return `<div class="anime-item" data-id="${anime.id}"><img src="${getCoverURLById(anime.id)}" crossOrigin="Anonymous"><h3>${anime.title}</h3></div>`;
+            return `<div class="anime-item" data-id="${anime.id}"><img src="${getCoverURLById(anime.id)}" crossOrigin="Anonymous"><h3>${anime.name_cn}</h3></div>`;
         }).join('');
     }
 
@@ -496,54 +496,55 @@ class AnimeGrid {
 
 
 // 提前准备一份缓存
-Caches[`${APIURL}animes`] = [
+
+Caches[`${APIURL}`] = [
 	{
-		"id": 10380,
-		"title": "命运石之门"
+		"id": 36752,
+		"name_cn": "灌篮高手"
 	},
 	{
-		"id": 9717,
-		"title": "魔法少女小圆"
+		"id": 25896,
+		"name_cn": "火之鸟"
 	},
 	{
-		"id": 265,
-		"title": "新世纪福音战士"
+		"id": 9470,
+		"name_cn": "剑风传奇"
 	},
 	{
-		"id": 10639,
-		"title": "Fate/Zero"
+		"id": 3510,
+		"name_cn": "海贼王"
 	},
 	{
-		"id": 27364,
-		"title": "冰菓"
+		"id": 1902,
+		"name_cn": "3月的狮子"
 	},
 	{
-		"id": 876,
-		"title": "CLANNAD ～AFTER STORY～"
+		"id": 293389,
+		"name_cn": "减法累述"
 	},
 	{
-		"id": 10440,
-		"title": "我们仍未知道那天所看见的花的名字。"
+		"id": 28648,
+		"name_cn": "乒乓"
 	},
 	{
-		"id": 55770,
-		"title": "进击的巨人"
+		"id": 175554,
+		"name_cn": "街角魔族"
 	},
 	{
-		"id": 51,
-		"title": "CLANNAD"
+		"id": 119393,
+		"name_cn": "来自深渊"
 	},
 	{
-		"id": 1428,
-		"title": "钢之炼金术师 FULLMETAL ALCHEMIST"
+		"id": 27684,
+		"name_cn": "哆啦A梦"
 	},
 	{
-		"id": 160209,
-		"title": "你的名字。"
+		"id": 283254,
+		"name_cn": "恋语轻唱"
 	},
 	{
-		"id": 909,
-		"title": "龙与虎"
+		"id": 128202,
+		"name_cn": "少女终末旅行"
 	}
 ]
 
