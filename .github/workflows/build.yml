@@ -11,7 +11,7 @@ on:
     branches: [ master ]
 
 jobs:
-  cache-and-install:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

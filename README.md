@@ -1,4 +1,4 @@
-![漫画生涯个人喜好表](https://github.com/itorr/anime-grid/blob/master/simple.jpg?raw=true)
+![漫画生涯个人喜好表](https://github.com/cloudac7/comic-grid/blob/master/simple.jpg?raw=true)
 
 # 🤖「漫画生涯个人喜好表生成器」
 
@@ -36,6 +36,7 @@ https://github.com/cloudac7/comic-grid
 
 
 ## 利用
- - 动画信息来自 番组计划 https://bangumi.tv/
+ - 漫画信息来自 番组计划 https://bangumi.tv/
+ - 其实是调用了书籍类别的搜索，换言之……也可以做轻小说哦（
 
 禁止 商业、盈利 相关利用
