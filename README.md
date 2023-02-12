@@ -1,14 +1,14 @@
-![动画生涯个人喜好表](https://github.com/itorr/anime-grid/blob/master/simple.jpg?raw=true)
+![漫画生涯个人喜好表](https://github.com/itorr/anime-grid/blob/master/simple.jpg?raw=true)
 
-# 🤖「动画生涯个人喜好表生成器」
+# 🤖「漫画生涯个人喜好表生成器」
 
-一个生成 动画生涯个人喜好表 的在线网页工具
+一个生成 漫画生涯个人喜好表 的在线网页工具
 
-230211: 新增超多个格子的 [扩展版](https://lab.magiconch.com/anime-grid/ex.html)
+<!--230211: 新增超多个格子的 [扩展版](https://lab.magiconch.com/anime-grid/ex.html)-->
 
 ## 地址 
 
-https://lab.magiconch.com/anime-grid/
+https://cloudac7.github.io/comic-gird/index.html
 
 ## 类别
 
@@ -32,7 +32,7 @@ https://lab.magiconch.com/anime-grid/
  - 最讨厌
 
 ## GitHub
-https://github.com/itorr/anime-grid
+https://github.com/cloudac7/comic-grid
 
 
 ## 利用
