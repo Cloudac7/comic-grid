@@ -8,7 +8,7 @@
 
 ## 地址 
 
-https://cloudac7.github.io/comic-gird/index.html
+https://cloudac7.github.io/comic-grid/index.html
 
 ## 类别
 
