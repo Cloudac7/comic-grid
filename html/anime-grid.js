@@ -121,7 +121,7 @@ class AnimeGrid {
             'cloudac7.github.io/comic-grid' + urlExt,
             'Forked from @卜卜口',
             '神奇海螺试验场',
-            '动画信息来自番组计划',
+            '漫画等信息来自番组计划',
             '禁止商业、盈利用途'
         ].join(' · ');
 
