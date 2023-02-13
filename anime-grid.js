@@ -1,14 +1,14 @@
 const htmlEl = document.documentElement;
 
 const Caches = {};
-const get = async (url)=>{
+const get = async (url) => {
 
-    if(Caches[url]) return Caches[url];
-    htmlEl.setAttribute('data-no-touch',true);
+    if (Caches[url]) return Caches[url];
+    htmlEl.setAttribute('data-no-touch', true);
     const f = await fetch(url);
     const data = await f.json();
     Caches[url] = data["list"];
-    htmlEl.setAttribute('data-no-touch',false);
+    htmlEl.setAttribute('data-no-touch', false);
     return data["list"];
 }
 
@@ -17,12 +17,12 @@ const get = async (url)=>{
 
 const Images = {};
 
-const loadImage = (src,onOver)=>{
-    if(Images[src]) return onOver(Images[src]);
+const loadImage = (src, onOver) => {
+    if (Images[src]) return onOver(Images[src]);
     const el = new Image();
     el.crossOrigin = 'Anonymous';
     el.src = src;
-    el.onload = ()=>{
+    el.onload = () => {
         onOver(el)
         Images[src] = el;
     }
@@ -31,7 +31,7 @@ const loadImage = (src,onOver)=>{
 
 const APIURL = `https://api.bgm.tv/search/subject/`;
 const ImageURL = `https://api.anitabi.cn/bgm/`;
-
+const ProxyURL = `https://red-crimson-fd08.konohata.workers.dev/corsproxy/?apiurl=`;
 
 const getCoverURLById = id => `${ImageURL}anime/${id}/cover.jpg`;
 
@@ -41,7 +41,7 @@ const getCoverURLById = id => `${ImageURL}anime/${id}/cover.jpg`;
 
 
 class AnimeGrid {
-    constructor({el,title,key,typeTexts,col,row,urlExt = ''}){
+    constructor({ el, title, key, typeTexts, col, row, urlExt = '' }) {
         this.el = el;
 
         this.key = key;
@@ -70,16 +70,16 @@ class AnimeGrid {
         this.animeListEl = el.querySelector('.anime-list');
 
 
-        this.animeListEl.onclick = e=>{
+        this.animeListEl.onclick = e => {
             const id = +e.target.getAttribute('data-id');
-            if(this.currentBangumiIndex === null) return;
+            if (this.currentBangumiIndex === null) return;
             this.setCurrentBangumi(id);
         };
-        this.formEl.onsubmit = async e=>{
-            if(e) e.preventDefault();
-        
+        this.formEl.onsubmit = async e => {
+            if (e) e.preventDefault();
+
             const keyword = this.searchInputEl.value.trim();
-        
+
             this.searchFromAPI(keyword);
         }
 
@@ -113,8 +113,8 @@ class AnimeGrid {
 
         ctx.fillStyle = '#FFF';
         ctx.fillRect(
-            0,0, 
-            width * scale,height * scale
+            0, 0,
+            width * scale, height * scale
         );
 
         const copyRightText = [
@@ -130,7 +130,7 @@ class AnimeGrid {
         ctx.font = `${9 * scale}px sans-serif`;
         ctx.fillStyle = '#AAA';
         ctx.textBaseline = 'middle';
-        ctx.lineCap  = 'round';
+        ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.fillText(
             copyRightText,
@@ -138,7 +138,7 @@ class AnimeGrid {
             (height - 10) * scale
         );
 
-        ctx.scale(scale,scale);
+        ctx.scale(scale, scale);
         ctx.translate(
             bodyMargin,
             bodyMargin + titleHeight
@@ -153,7 +153,7 @@ class AnimeGrid {
 
 
         ctx.font = 'bold 32px sans-serif';
-        ctx.fillText(title,contentWidth / 2, -26 );
+        ctx.fillText(title, contentWidth / 2, -26);
 
 
 
@@ -161,34 +161,34 @@ class AnimeGrid {
         ctx.lineWidth = 2;
         ctx.strokeStyle = '#222';
 
-        for(let y = 0;y <= row;y++){
+        for (let y = 0; y <= row; y++) {
 
             ctx.beginPath();
-            ctx.moveTo(0,y * rowHeight);
-            ctx.lineTo(contentWidth,y * rowHeight);
+            ctx.moveTo(0, y * rowHeight);
+            ctx.lineTo(contentWidth, y * rowHeight);
             ctx.globalAlpha = 1;
             ctx.stroke();
 
-            if( y === row) break;
+            if (y === row) break;
             ctx.beginPath();
-            ctx.moveTo(0,y * rowHeight + rowHeight - fontHeight);
-            ctx.lineTo(contentWidth,y * rowHeight + rowHeight - fontHeight);
+            ctx.moveTo(0, y * rowHeight + rowHeight - fontHeight);
+            ctx.lineTo(contentWidth, y * rowHeight + rowHeight - fontHeight);
             ctx.globalAlpha = .2;
             ctx.stroke();
         }
         ctx.globalAlpha = 1;
-        for(let x = 0;x <= col;x++){
+        for (let x = 0; x <= col; x++) {
             ctx.beginPath();
-            ctx.moveTo(x * colWidth,0);
-            ctx.lineTo(x * colWidth,contentHeight);
+            ctx.moveTo(x * colWidth, 0);
+            ctx.lineTo(x * colWidth, contentHeight);
             ctx.stroke();
         }
         ctx.restore();
 
 
-        for(let y = 0;y < row;y++){
+        for (let y = 0; y < row; y++) {
 
-            for(let x = 0;x < col;x++){
+            for (let x = 0; x < col; x++) {
                 const top = y * rowHeight;
                 const left = x * colWidth;
                 const type = types[y * col + x];
@@ -211,47 +211,47 @@ class AnimeGrid {
         this.colWidth = colWidth;
         this.rowHeight = rowHeight;
         this.canvasRatio = canvasRatio;
-        
+
         ctx.font = 'bold 32px sans-serif';
-        
+
         this.outputEl = el.querySelector('.output-box');
         this.outputImageEl = this.outputEl.querySelector('img');
 
 
-        
-        canvas.onclick = e=>{
+
+        canvas.onclick = e => {
             const rect = canvas.getBoundingClientRect();
             const { clientX, clientY } = e;
             const x = Math.floor(((clientX - rect.left) / rect.width * width - bodyMargin) / colWidth);
-            const y = Math.floor(((clientY - rect.top) / rect.height * height  - bodyMargin - titleHeight) / rowHeight);
-        
-            if(x < 0) return;
-            if(x >= col) return;
-            if(y < 0) return;
-            if(y > row) return;
-        
+            const y = Math.floor(((clientY - rect.top) / rect.height * height - bodyMargin - titleHeight) / rowHeight);
+
+            if (x < 0) return;
+            if (x >= col) return;
+            if (y < 0) return;
+            if (y > row) return;
+
             const index = y * col + x;
-        
-            if(index >= col * row) return;
-        
+
+            if (index >= col * row) return;
+
             this.openSearchBox(index);
         }
-        
-        el.onclick = e=>{
+
+        el.onclick = e => {
             const { target } = e;
             const action = target.getAttribute('action');
-            if(!action) return;
-            
+            if (!action) return;
+
             const actionFunc = this[action];
-            if(!actionFunc) return;
+            if (!actionFunc) return;
 
             actionFunc.call(this);
         }
-        
+
         this.drawBangumis();
 
     }
-    generatorHTML({title}){
+    generatorHTML({ title }) {
         return `<canvas></canvas>
 <div class="ctrl-box">
     <a class="generator-btn ui-btn" action="downloadImage">生成${title}</a>
@@ -283,60 +283,60 @@ class AnimeGrid {
     </div>
 </div>`;
     }
-    generatorDefaultBangumis(){
+    generatorDefaultBangumis() {
         this.bangumis = new Array(this.types.length).fill(null);
     }
-    getBangumiIdsText(){
-        return this.bangumis.map(i=>String( i || 0 )).join(',')
+    getBangumiIdsText() {
+        return this.bangumis.map(i => String(i || 0)).join(',')
     }
 
-    getBangumisFormLocalStorage(){
-        
-        if(!window.localStorage) return this.generatorDefaultBangumis();
+    getBangumisFormLocalStorage() {
+
+        if (!window.localStorage) return this.generatorDefaultBangumis();
 
         const bangumisText = localStorage.getItem(this.key);
 
-        if(!bangumisText) return this.generatorDefaultBangumis();
+        if (!bangumisText) return this.generatorDefaultBangumis();
 
-        this.bangumis = bangumisText.split(/,/g).map(i=>/^\d+$/.test(i) ? +i : i);
+        this.bangumis = bangumisText.split(/,/g).map(i => /^\d+$/.test(i) ? +i : i);
     }
-    saveBangumisToLocalStorage(){
-        localStorage.setItem(this.key,this.getBangumiIdsText());
+    saveBangumisToLocalStorage() {
+        localStorage.setItem(this.key, this.getBangumiIdsText());
     }
 
 
 
-    openSearchBox(index){
+    openSearchBox(index) {
         this.currentBangumiIndex = index;
-        htmlEl.setAttribute('data-no-scroll',true);
-        this.searchBoxEl.setAttribute('data-show',true);
-        
+        htmlEl.setAttribute('data-no-scroll', true);
+        this.searchBoxEl.setAttribute('data-show', true);
+
         this.searchInputEl.focus();
 
         const value = this.bangumis[index] || '';
 
-        if(!/^\d+$/.test(value)){
+        if (!/^\d+$/.test(value)) {
             this.searchInputEl.value = value;
         }
         this.searchFromAPI();
     }
-    closeSearchBox(){
-        htmlEl.setAttribute('data-no-scroll',false);
-        this.searchBoxEl.setAttribute('data-show',false);
+    closeSearchBox() {
+        htmlEl.setAttribute('data-no-scroll', false);
+        this.searchBoxEl.setAttribute('data-show', false);
         this.searchInputEl.value = '';
     }
-    
-    setInputText(){
-        const text = this.searchInputEl.value.trim().replace(/,/g,'');
-        if(!text) return this.searchInputEl.focus();
+
+    setInputText() {
+        const text = this.searchInputEl.value.trim().replace(/,/g, '');
+        if (!text) return this.searchInputEl.focus();
         this.setCurrentBangumi(text);
     }
-    setNull(){
+    setNull() {
         this.setCurrentBangumi(null);
     }
 
-    setCurrentBangumi(value){
-        if(this.currentBangumiIndex === null) return;
+    setCurrentBangumi(value) {
+        if (this.currentBangumiIndex === null) return;
 
         this.bangumis[this.currentBangumiIndex] = value;
         this.saveBangumisToLocalStorage();
@@ -346,78 +346,82 @@ class AnimeGrid {
     }
 
 
-    async searchFromBangumiByKeyword(keyword){
+    async searchFromBangumiByKeyword(keyword) {
         let url = `${APIURL}`;
-        if(keyword) url = url + `${encodeURIComponent(keyword)}?type=1`;
+        if (keyword) url = url + `${encodeURIComponent(keyword)}?type=1`;
 
         const animes = await get(url);
         this.resetAnimeList(animes);
     }
 
-    searchFromBangumi(){
+    searchFromBangumi() {
         const keyword = this.searchInputEl.value.trim();
-        if(!keyword) return this.searchInputEl.focus();
+        if (!keyword) return this.searchInputEl.focus();
 
         this.searchFromBangumiByKeyword(keyword);
     }
 
 
-    async searchFromAPI(keyword){
+    async searchFromAPI(keyword) {
         let url = `${APIURL}`;
-        if(keyword) url = url + `${encodeURIComponent(keyword)}?type=1`;
+        if (keyword) url = url + `${encodeURIComponent(keyword)}?type=1`;
 
         const animes = await get(url);
         this.resetAnimeList(animes);
     }
 
-    resetAnimeList(animes){
-        this.animeListEl.innerHTML = animes.map(anime=>{
-            return `<div class="anime-item" data-id="${anime.id}"><img src="${getCoverURLById(anime.id)}" crossOrigin="Anonymous"><h3>${anime.name_cn}</h3></div>`;
+    resetAnimeList(animes) {
+        this.animeListEl.innerHTML = animes.map(anime => {
+            if (anime.name_cn !== '') {
+                return `<div class="anime-item" data-id="${anime.id}"><img src="${ProxyURL}${anime.images.common}"><h3>${anime.name_cn}</h3></div>`;
+            } else {
+                return `<div class="anime-item" data-id="${anime.id}"><img src="${ProxyURL}${anime.images.common}"><h3>${anime.name}</h3></div>`;
+            }
         }).join('');
     }
 
-    drawBangumis(){
-        const { 
-            col,row, 
-            colWidth,rowHeight, 
-            imageWidth,imageHeight,
+    drawBangumis() {
+        const {
+            col, row,
+            colWidth, rowHeight,
+            imageWidth, imageHeight,
             bangumis,
             canvasRatio,
             ctx,
         } = this;
 
-        for(let index in bangumis){
+        for (let index in bangumis) {
             const id = bangumis[index];
             const x = index % col;
             const y = Math.floor(index / col);
 
-            if(!id){
+            if (!id) {
                 ctx.save();
                 ctx.fillStyle = '#FFF';
                 ctx.fillRect(
                     x * colWidth + 1,
-                    y * rowHeight + 1, 
+                    y * rowHeight + 1,
                     imageWidth,
                     imageHeight,
                 )
                 ctx.fillStyle = '#d3d3d3';
                 ctx.fillRect(
                     x * colWidth + 1,
-                    y * rowHeight + imageHeight - 1, 
+                    y * rowHeight + imageHeight - 1,
                     imageWidth,
                     2,
                 )
                 ctx.restore();
                 continue;
             }
-    
-            if(!/^\d+$/.test(id)){ // 非数字
-    
+
+            if (!/^\d+$/.test(id)) { // 非数字
+
                 ctx.save();
                 ctx.fillStyle = '#FFF';
                 ctx.fillRect(
                     x * colWidth + 1,
-                    y * rowHeight + 1, 
+                    y * rowHeight + 1,
                     imageWidth,
                     imageHeight,
                 )
@@ -425,69 +429,69 @@ class AnimeGrid {
                 ctx.fillText(
                     id,
                     (x + 0.5) * colWidth,
-                    (y + 0.5) * rowHeight - 4, 
+                    (y + 0.5) * rowHeight - 4,
                     imageWidth - 10,
                 );
                 continue;
             }
-            
-            loadImage(getCoverURLById(id),el=>{
+
+            loadImage(getCoverURLById(id), el => {
                 const { naturalWidth, naturalHeight } = el;
                 const originRatio = el.naturalWidth / el.naturalHeight;
-    
+
                 let sw, sh, sx, sy;
-                if(originRatio < canvasRatio){
+                if (originRatio < canvasRatio) {
                     sw = naturalWidth
                     sh = naturalWidth / imageWidth * imageHeight;
                     sx = 0
                     sy = (naturalHeight - sh)
-                }else{
+                } else {
                     sh = naturalHeight
                     sw = naturalHeight / imageHeight * imageWidth;
                     sx = (naturalWidth - sw)
                     sy = 0
                 }
-    
+
                 ctx.drawImage(
                     el,
-                    
+
                     sx, sy,
-                    sw, sh, 
-    
+                    sw, sh,
+
                     x * colWidth + 1,
-                    y * rowHeight + 1, 
+                    y * rowHeight + 1,
                     imageWidth,
                     imageHeight,
                 );
             })
         }
     }
-    
-    
-    showOutput(imgURL){
+
+
+    showOutput(imgURL) {
         this.outputImageEl.src = imgURL;
-        this.outputEl.setAttribute('data-show',true);
-        htmlEl.setAttribute('data-no-scroll',true);
+        this.outputEl.setAttribute('data-show', true);
+        htmlEl.setAttribute('data-no-scroll', true);
     }
-    closeOutput(){
-        this.outputEl.setAttribute('data-show',false);
-        htmlEl.setAttribute('data-no-scroll',false);
+    closeOutput() {
+        this.outputEl.setAttribute('data-show', false);
+        htmlEl.setAttribute('data-no-scroll', false);
     }
-    
-    downloadImage(){
+
+    downloadImage() {
         const fileName = `[神奇海螺][${this.title}].jpg`;
         const mime = 'image/jpeg';
-        const imgURL = this.canvas.toDataURL(mime,0.8);
+        const imgURL = this.canvas.toDataURL(mime, 0.8);
         const linkEl = document.createElement('a');
         linkEl.download = fileName;
         linkEl.href = imgURL;
-        linkEl.dataset.downloadurl = [ mime, fileName, imgURL ].join(':');
+        linkEl.dataset.downloadurl = [mime, fileName, imgURL].join(':');
         document.body.appendChild(linkEl);
         linkEl.click();
         document.body.removeChild(linkEl);
         new Image().src = `${APIURL}grid?ids=${this.getBangumiIdsText()}`;
-    
-       this.showOutput(imgURL);
+
+        this.showOutput(imgURL);
     }
 
 }
@@ -498,54 +502,90 @@ class AnimeGrid {
 // 提前准备一份缓存
 
 Caches[`${APIURL}`] = [
-	{
-		"id": 36752,
-		"name_cn": "灌篮高手"
-	},
-	{
-		"id": 25896,
-		"name_cn": "火之鸟"
-	},
-	{
-		"id": 9470,
-		"name_cn": "剑风传奇"
-	},
-	{
-		"id": 3510,
-		"name_cn": "海贼王"
-	},
-	{
-		"id": 1902,
-		"name_cn": "3月的狮子"
-	},
-	{
-		"id": 293389,
-		"name_cn": "减法累述"
-	},
-	{
-		"id": 28648,
-		"name_cn": "乒乓"
-	},
-	{
-		"id": 175554,
-		"name_cn": "街角魔族"
-	},
-	{
-		"id": 119393,
-		"name_cn": "来自深渊"
-	},
-	{
-		"id": 27684,
-		"name_cn": "哆啦A梦"
-	},
-	{
-		"id": 283254,
-		"name_cn": "恋语轻唱"
-	},
-	{
-		"id": 128202,
-		"name_cn": "少女终末旅行"
-	}
+    {
+        "id": 36752,
+        "name_cn": "灌篮高手",
+        "images": {
+            "common": "http://lain.bgm.tv/pic/cover/c/5e/d6/36752_9tOt7.jpg"
+        }
+    },
+    {
+        "id": 25896,
+        "name_cn": "火之鸟",
+        "images": {
+            "common": "https://lain.bgm.tv/pic/cover/c/af/6e/25896_FAsgz.jpg"
+        }
+    },
+    {
+        "id": 9640,
+        "name_cn": "剑风传奇",
+        "images": {
+            "common": "https://lain.bgm.tv/pic/cover/c/6f/75/9640_gYJRJ.jpg"
+        }
+    },
+    {
+        "id": 3510,
+        "name_cn": "海贼王",
+        "images": {
+            "common": "https://lain.bgm.tv/pic/cover/c/15/e1/3510_pWiY9.jpg"
+        }
+    },
+    {
+        "id": 5424,
+        "name_cn": "蜂蜜与四叶草",
+        "images": {
+            "common": "https://lain.bgm.tv/pic/cover/c/44/ba/5424_87rCL.jpg"
+        }
+    },
+    {
+        "id": 1902,
+        "name_cn": "3月的狮子",
+        "images": {
+            "common": "https://lain.bgm.tv/pic/cover/c/fc/4d/1902_yfG4q.jpg"
+        }
+    },
+    {
+        "id": 293389,
+        "name_cn": "减法累述",
+        "images": {
+            "common": "https://lain.bgm.tv/pic/cover/c/81/f5/293389_P00PA.jpg"
+        }
+    },
+    {
+        "id": 128202,
+        "name_cn": "少女终末旅行",
+        "images": {
+            "common": "https://lain.bgm.tv/pic/cover/c/95/00/128202_XlnAd.jpg"
+        }
+    },
+    {
+        "id": 175554,
+        "name_cn": "街角魔族",
+        "images": {
+            "common": "https://lain.bgm.tv/pic/cover/c/9e/e9/175554_T3fkf.jpg"
+        }
+    },
+    {
+        "id": 119393,
+        "name_cn": "来自深渊",
+        "images": {
+            "common": "https://lain.bgm.tv/pic/cover/c/6c/b8/119393_Zl73Z.jpg"
+        }
+    },
+    {
+        "id": 132936,
+        "name_cn": "终将成为你",
+        "images": {
+            "common": "https://lain.bgm.tv/pic/cover/c/32/48/132936_KlKa0.jpg"
+        }
+    },
+    {
+        "id": 42232,
+        "name_cn": "排球!!",
+        "images": {
+            "common": "https://lain.bgm.tv/pic/cover/c/a0/1e/42232_ZkW8w.jpg"
+        }
+    }
 ]
 
 
