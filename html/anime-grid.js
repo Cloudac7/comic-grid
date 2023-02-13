@@ -31,7 +31,7 @@ const loadImage = (src, onOver) => {
 
 const APIURL = `https://api.bgm.tv/search/subject/`;
 const ImageURL = `https://api.bgm.tv/v0/subjects/`;
-const ProxyURL = `https://red-crimson-fd08.konohata.workers.dev/corsproxy/?apiurl=`;
+const ProxyURL = `https://app.miraao.tk/corsproxy/?apiurl=`;
 
 
 const getCoverURLById = async id => {
@@ -374,9 +374,9 @@ class AnimeGrid {
     resetAnimeList(animes) {
         this.animeListEl.innerHTML = animes.map(anime => {
             if (anime.name_cn !== '') {
-                return `<div class="anime-item" data-id="${anime.id}"><img src="${ProxyURL}${anime.images.common}"><h3>${anime.name_cn}</h3></div>`;
+                return `<div class="anime-item" data-id="${anime.id}"><img src="${anime.images.common}"><h3>${anime.name_cn}</h3></div>`;
             } else {
-                return `<div class="anime-item" data-id="${anime.id}"><img src="${ProxyURL}${anime.images.common}"><h3>${anime.name}</h3></div>`;
+                return `<div class="anime-item" data-id="${anime.id}"><img src="${anime.images.common}"><h3>${anime.name}</h3></div>`;
             }
         }).join('');
     }
