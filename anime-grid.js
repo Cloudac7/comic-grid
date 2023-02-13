@@ -30,14 +30,15 @@ const loadImage = (src, onOver) => {
 
 
 const APIURL = `https://api.bgm.tv/search/subject/`;
-const ImageURL = `https://api.anitabi.cn/bgm/`;
+const ImageURL = `https://api.bgm.tv/v0/subjects/`;
 const ProxyURL = `https://red-crimson-fd08.konohata.workers.dev/corsproxy/?apiurl=`;
 
-const getCoverURLById = id => `${ImageURL}anime/${id}/cover.jpg`;
 
-
-
-
+const getCoverURLById = async id => {
+    const response = await fetch(`${ImageURL}${id}`);
+    const data = await response.json();
+    return data.images.common;
+};
 
 
 class AnimeGrid {
@@ -380,7 +381,7 @@ class AnimeGrid {
         }).join('');
     }
 
-    drawBangumis() {
+    async drawBangumis() {
         const {
             col, row,
             colWidth, rowHeight,
@@ -434,8 +435,9 @@ class AnimeGrid {
                 );
                 continue;
             }
-
-            loadImage(getCoverURLById(id), el => {
+            
+            var imageSrc = ProxyURL + await getCoverURLById(id);
+            loadImage(imageSrc, el => {
                 const { naturalWidth, naturalHeight } = el;
                 const originRatio = el.naturalWidth / el.naturalHeight;
 
